@@ -117,9 +117,9 @@ data_dir = os.path.join('data', dataset)
 # calculate number of iterations required
 data = np.memmap(os.path.join(data_dir, 'train.bin'), dtype=np.uint16, mode='r')
 token_count = len(data)
-max_iters = np.ceil(token_count / tokens_per_iter)
+max_iters = int(np.ceil(token_count / tokens_per_iter))
 lr_decay_iters = max_iters
-print(f'running for {max_iters:,d} iterations')
+print(f'running for {max_iters:,} iterations')
 
 def get_batch(split):
     # We recreate np.memmap every batch to avoid a memory leak, as per
