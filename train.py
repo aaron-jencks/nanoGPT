@@ -119,7 +119,7 @@ data_dir = os.path.join('data', dataset)
 if calculate_iters:
     data = np.memmap(os.path.join(data_dir, 'train.bin'), dtype=np.uint16, mode='r')
     token_count = len(data)
-    max_iters = np.ceil(token_count / tokens_per_iter)
+    max_iters = int(np.ceil(token_count / tokens_per_iter))
 lr_decay_iters = max_iters
 print(f'running for {max_iters:,d} iterations')
 
