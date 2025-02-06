@@ -56,7 +56,8 @@ dropout = 0.0 # for pretraining 0 is good, for finetuning try 0.1+
 bias = False # do we use bias inside LayerNorm and Linear layers?
 # adamw optimizer
 learning_rate = 6e-4 # max learning rate
-# max_iters = 600000 # total number of training iterations
+max_iters = 600000 # total number of training iterations
+calculate_iters = False
 weight_decay = 1e-1
 beta1 = 0.9
 beta2 = 0.95
@@ -115,11 +116,12 @@ ctx = nullcontext() if device_type == 'cpu' else torch.amp.autocast(device_type=
 data_dir = os.path.join('data', dataset)
 
 # calculate number of iterations required
-data = np.memmap(os.path.join(data_dir, 'train.bin'), dtype=np.uint16, mode='r')
-token_count = len(data)
-max_iters = int(np.ceil(token_count / tokens_per_iter))
+if calculate_iters:
+    data = np.memmap(os.path.join(data_dir, 'train.bin'), dtype=np.uint16, mode='r')
+    token_count = len(data)
+    max_iters = np.ceil(token_count / tokens_per_iter)
 lr_decay_iters = max_iters
-print(f'running for {max_iters:,} iterations')
+print(f'running for {max_iters:,d} iterations')
 
 def get_batch(split):
     # We recreate np.memmap every batch to avoid a memory leak, as per
