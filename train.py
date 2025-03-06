@@ -16,6 +16,7 @@ $ torchrun --nproc_per_node=8 --nnodes=2 --node_rank=1 --master_addr=123.456.123
 (If your cluster does not have Infiniband interconnect prepend NCCL_IB_DISABLE=1)
 """
 
+import datetime as dt
 import os
 import time
 import math
@@ -101,6 +102,10 @@ else:
     ddp_world_size = 1
 tokens_per_iter = gradient_accumulation_steps * ddp_world_size * batch_size * block_size
 print(f"tokens per iteration will be: {tokens_per_iter:,}")
+
+# generate a unique wandb run name
+wandb_run_name += f'-{dt.datetime.now().date().isoformat()}'
+print(f'wandb run name will be {wandb_run_name}')
 
 if master_process:
     os.makedirs(out_dir, exist_ok=True)
