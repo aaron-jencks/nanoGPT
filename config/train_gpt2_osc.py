@@ -5,4 +5,4 @@
 
 batch_size = 60
 gradient_accumulation_steps = 8
-calculate_iters = True
+# calculate_iters = True
