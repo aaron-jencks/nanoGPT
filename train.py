@@ -89,7 +89,8 @@ elif force_cuda:
         raise Exception('No GPUs available')
     print('GPUs available: {}'.format(torch.cuda.is_available()))
     for i in range(devices):
-        print('GPU {}: {}'.format(i, torch.cuda.get_device_name(i)))
+        print('checking GPU {}: '.format(i), end='')
+        print(torch.cuda.get_device_name(i))
 
 # various inits, derived attributes, I/O setup
 ddp = int(os.environ.get('RANK', -1)) != -1 # is this a ddp run?
