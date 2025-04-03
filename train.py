@@ -87,7 +87,7 @@ elif force_cuda:
     devices = torch.cuda.device_count()
     if devices == 0:
         raise Exception('No GPUs available')
-    print('GPUs available: {}'.format(torch.cuda.is_available()))
+    print('GPUs available: {}'.format(devices))
     for i in range(devices):
         print('checking GPU {}: '.format(i), end='')
         print(torch.cuda.get_device_name(i))
