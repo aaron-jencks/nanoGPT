@@ -83,6 +83,13 @@ config = {k: globals()[k] for k in config_keys} # will be useful for logging
 
 if force_cuda and not torch.cuda.is_available():
     raise Exception('CUDA not available')
+elif force_cuda:
+    devices = torch.cuda.device_count()
+    if devices == 0:
+        raise Exception('No GPUs available')
+    print('GPUs available: {}'.format(torch.cuda.is_available()))
+    for i in range(devices):
+        print('GPU {}: {}'.format(i, torch.cuda.get_device_name(i)))
 
 # various inits, derived attributes, I/O setup
 ddp = int(os.environ.get('RANK', -1)) != -1 # is this a ddp run?
