@@ -23,3 +23,6 @@ log_interval = 10
 
 # weight decay
 weight_decay = 1e-1
+
+# gpt2 vocab size is not 50304
+vocab_size = 50000
