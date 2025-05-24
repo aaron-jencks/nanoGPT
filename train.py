@@ -18,10 +18,12 @@ $ torchrun --nproc_per_node=8 --nnodes=2 --node_rank=1 --master_addr=123.456.123
 
 import datetime as dt
 import os
+import shutil
 import time
 import math
 import pickle
 from contextlib import nullcontext
+from typing import Dict
 
 import numpy as np
 import torch
@@ -33,6 +35,7 @@ from model import GPTConfig, GPT
 # -----------------------------------------------------------------------------
 # default config values designed to train a gpt2 (124M) on OpenWebText
 # I/O
+checkpoint_count = 2
 out_dir = 'out'
 eval_interval = 2000
 log_interval = 1
@@ -275,6 +278,17 @@ if wandb_log and master_process:
     import wandb
     wandb.init(project=wandb_project, name=wandb_run_name, config=config)
 
+# checkpoint io
+def save_checkpoint(checkpoint: Dict, attempt: int = 0):
+    out_path = os.path.join(out_dir, 'ckpt.pt' if attempt == 0 else f'ckpt.pt.back.{attempt}')
+    if os.path.exists(out_path) and attempt < checkpoint_count - 1:
+        save_checkpoint(checkpoint, attempt + 1)
+    if attempt > 0:
+        prev_out = os.path.join(out_dir, 'ckpt.pt' if attempt - 1 == 0 else f'ckpt.pt.back.{attempt - 1}')
+        shutil.copyfile(prev_out, out_path)
+    else:
+        torch.save(checkpoint, out_path)
+
 # training loop
 X, Y = get_batch('train') # fetch the very first batch
 t0 = time.time()
@@ -312,7 +326,7 @@ while True:
                     'config': config,
                 }
                 print(f"saving checkpoint to {out_dir}")
-                torch.save(checkpoint, os.path.join(out_dir, 'ckpt.pt'))
+                save_checkpoint(checkpoint)
     if iter_num == 0 and eval_only:
         break
 
