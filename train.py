@@ -44,6 +44,7 @@ eval_only = False # if True, script exits right after the first eval
 always_save_checkpoint = True # if True, always save a checkpoint after each eval
 init_from = 'scratch' # 'scratch' or 'resume' or 'gpt2*'
 # wandb logging
+slurm_id = 'DEBUG'
 wandb_log = False # disabled by default
 wandb_project = 'owt'
 wandb_run_name = 'gpt2' # 'run' + str(time.time())
@@ -121,7 +122,9 @@ tokens_per_iter = gradient_accumulation_steps * ddp_world_size * batch_size * bl
 print(f"tokens per iteration will be: {tokens_per_iter:,}")
 
 # generate a unique wandb run name
-wandb_run_name += f'-{dt.datetime.now().date().isoformat()}'
+wandb_run_name += f'-{slurm_id}'
+if slurm_id == 'DEBUG':
+    wandb_run_name += f'-{dt.datetime.now().date().isoformat()}'
 print(f'wandb run name will be {wandb_run_name}')
 
 if master_process:
