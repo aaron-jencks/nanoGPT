@@ -16,6 +16,9 @@ comes up with a better simple Python solution I am all ears.
 
 import sys
 from ast import literal_eval
+import logging
+
+logger = logging.getLogger(__name__)
 
 for arg in sys.argv[1:]:
     if '=' not in arg:
@@ -40,9 +43,10 @@ for arg in sys.argv[1:]:
                 attempt = val
             # ensure the types match ok
             if type(attempt) != type(globals()[key]):
-                raise ValueError(
-                    f'Attempting to use {attempt} for {key}. Type mismatch: {type(attempt)} vs {type(globals()[key])}'
-                )
+                if key != 'slurm_id':
+                    raise ValueError(
+                        f'Attempting to use {attempt} for {key}. Type mismatch: {type(attempt)} vs {type(globals()[key])}'
+                    )
             # cross fingers
             print(f"Overriding: {key} = {attempt}")
             globals()[key] = attempt
