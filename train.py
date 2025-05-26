@@ -189,6 +189,7 @@ if init_from == 'scratch':
     if vocab_size is None and meta_vocab_size is None:
         print("defaulting to vocab_size of GPT-2 to 50304 (50257 rounded up for efficiency)")
     model_args['vocab_size'] = vocab_size if vocab_size is not None else (meta_vocab_size if meta_vocab_size is not None else 50304)
+    print(f'model args: {model_args}')
     gptconf = GPTConfig(**model_args)
     model = GPT(gptconf)
 elif init_from == 'resume':
@@ -201,6 +202,7 @@ elif init_from == 'resume':
     # the rest of the attributes (e.g. dropout) can stay as desired from command line
     for k in ['n_layer', 'n_head', 'n_embd', 'block_size', 'bias', 'vocab_size']:
         model_args[k] = checkpoint_model_args[k]
+    print(f'model args: {model_args}')
     # create the model
     gptconf = GPTConfig(**model_args)
     model = GPT(gptconf)
