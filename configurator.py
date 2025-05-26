@@ -41,9 +41,11 @@ for arg in sys.argv[1:]:
             except (SyntaxError, ValueError):
                 # if that goes wrong, just use the string
                 attempt = val
+                if key == 'vocab_size':
+                    attempt = int(val)
             # ensure the types match ok
             if type(attempt) != type(globals()[key]):
-                if key != 'slurm_id':
+                if key != 'slurm_id' and key != 'vocab_size':
                     raise ValueError(
                         f'Attempting to use {attempt} for {key}. Type mismatch: {type(attempt)} vs {type(globals()[key])}'
                     )
