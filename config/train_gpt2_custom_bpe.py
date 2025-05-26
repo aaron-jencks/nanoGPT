@@ -1,0 +1,1 @@
+vocab_size = 50_001  # merges + special token
